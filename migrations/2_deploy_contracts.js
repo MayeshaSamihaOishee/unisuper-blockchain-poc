@@ -2,5 +2,5 @@
 var Employee = artifacts.require("./Employee.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(Employee, '13-03-1993');
+  deployer.deploy(Employee, '30-09-1983');
 };

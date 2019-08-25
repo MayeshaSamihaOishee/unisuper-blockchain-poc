@@ -24,6 +24,8 @@ contract Account {
         administrative
     }
 
+    event LogSuccessfullyCreated(string createdAccount);
+
     // Most of these variables should be private, and updated through functions that check ownership permissions
 
     address payable SuperAccountId; // contractID
@@ -45,6 +47,8 @@ contract Account {
         EmployeeId = employeeId;
         AccountStatus = AccountStatusType.open;
         AccountType = accountType;
+        string memory logevent = "logged";
+        emit LogSuccessfullyCreated(logevent);
     }
 
 
@@ -84,7 +88,7 @@ contract Account {
 
     function closeAccount() public {
         require(msg.sender == EmployeeId, 'invalid authorisation');
-
+        require(AccountStatus != AccountStatusType.closed, "Account Already Closed");
         AccountStatus = AccountStatusType.closed;
     }
 

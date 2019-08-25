@@ -16,18 +16,25 @@ contract Employee {
 
     address payable public EmployeeId;
     address public SpouseId;
-    address public PayoutAddress;
+    address payable public EmployeeAddress;
+    address PayoutAddress;
+    uint32 Counter;
     string public DOB;
 
     mapping (address => Account) Accounts;
+    Account[] arrayOfAccounts;
+    event LogCreateNewAccount(Account loggedAccount);
 
 
     constructor(string memory dob) public {
+        EmployeeAddress = msg.sender;
         EmployeeId = address(this);
         DOB = dob;
+        Counter = 0;
     }
 
-    function setPayoutAddress(address payable payoutAddress) public{
+    function setPayoutAddress(address payoutAddress) public{
+        require(msg.sender == EmployeeAddress, "Invalid Authorization");
         PayoutAddress = payoutAddress;
     }
 
@@ -45,14 +52,14 @@ contract Employee {
         PayoutAddress = payoutAddress;
     }
 
-    function createNewAccount() public{
+    function createNewAccount() public {
+        require(msg.sender == EmployeeAddress, "Invalid Authorization");
         Account tempAccountStore = new Account(EmployeeId, Account.AccountAccumulationType.Accumulation1);
         Accounts[address(tempAccountStore)] = tempAccountStore;
     }
 
     function deleteAccount(address accountAddress) public {
         Accounts[accountAddress].closeAccount();
-        delete Accounts[accountAddress];
     }
 
     function transferFundsBetweenAccounts(address payable payTo, address payable payFrom, uint amount) public {
@@ -69,6 +76,12 @@ contract Employee {
 
         // Add administrative abilities and behaviours
 
+    }
+
+    // Creating testable code
+
+    function getArrayOfAccounts() public view  returns (Account[] memory) {
+        return arrayOfAccounts;
     }
 
     function () external payable {}
