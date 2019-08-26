@@ -16,7 +16,7 @@ contract Employee {
 
     address payable public EmployeeId;
     address public SpouseId;
-    address payable public EmployeeAddress;
+    address public EmployeeAddress = msg.sender;
     address PayoutAddress;
     uint32 Counter;
     string public DOB;
@@ -27,15 +27,19 @@ contract Employee {
 
 
     constructor(string memory dob) public {
-        EmployeeAddress = msg.sender;
+        //
         EmployeeId = address(this);
         DOB = dob;
         Counter = 0;
     }
+    // modifier for autherization check
+    modifier onlyEmployee(address _EmployeeAddress) {
+        require(msg.sender == _EmployeeAddress, "Invalid Authorization");
+    _;
+    }
 
-    function setPayoutAddress(address payoutAddress) public{
-        require(msg.sender == EmployeeAddress, "Invalid Authorization");
-        PayoutAddress = payoutAddress;
+    function setPayoutAddress(address payoutAddress) public onlyEmployee(EmployeeAddress){
+                EmployeeAddress = payoutAddress;
     }
 
     function addSpouse(address payable spouseId) public {
@@ -49,6 +53,7 @@ contract Employee {
     }
 
     function changePayoutAddress(address payable payoutAddress) public{
+        require(msg.sender == EmployeeAddress, "Invalid Authorization");
         PayoutAddress = payoutAddress;
     }
 
@@ -59,10 +64,12 @@ contract Employee {
     }
 
     function deleteAccount(address accountAddress) public {
+        require(msg.sender == EmployeeAddress, "Invalid Authorization");
         Accounts[accountAddress].closeAccount();
     }
 
     function transferFundsBetweenAccounts(address payable payTo, address payable payFrom, uint amount) public {
+        require(msg.sender == EmployeeAddress, "Invalid Authorization");
         if(Accounts[payTo].AccountStatus() == Account.AccountStatusType.open){
             Accounts[payFrom].transferFunds(payTo, amount);
         }
