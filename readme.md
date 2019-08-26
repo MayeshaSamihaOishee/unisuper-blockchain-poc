@@ -76,3 +76,4 @@ Unfortunately there is a known [GIT issue](https://github.com/trufflesuite/truff
 
 ## How to: Interface with the contracts using web3.eth
 // To be completed next
+// This is Virinchi Test
