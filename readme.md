@@ -75,4 +75,4 @@ Truffle has two great articles on writing tests.
 Unfortunately there is a known [GIT issue](https://github.com/trufflesuite/truffle/issues/1630) which prevents users from being able to write tests directly in Solidity if they are using Windows 10. As several of our team members use Windows 10 we need to account for this, therefore we will use method (2) and write tests directly in Javascript.
 
 ## How to: Interface with the contracts using web3.eth
-// To be completed next
+// This is Adheeshs test
