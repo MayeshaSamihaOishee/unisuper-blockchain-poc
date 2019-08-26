@@ -17,7 +17,7 @@ contract Employee {
     address payable public EmployeeId;
     address public SpouseId;
     address payable public EmployeeAddress;
-    address PayoutAddress;
+    address public PayoutAddress;
     uint32 Counter;
     string public DOB;
 
@@ -33,42 +33,48 @@ contract Employee {
         Counter = 0;
     }
 
-    function setPayoutAddress(address payoutAddress) public{
-        require(msg.sender == EmployeeAddress, "Invalid Authorization");
+//Modifier for owner access permission 
+    modifier onlyOwner (address _address){
+        require(msg.sender == _address, "Invalid Authentication");
+    _;
+    }
+
+    function setPayoutAddress(address payoutAddress) public onlyOwner(EmployeeAddress){
+        //require(msg.sender == EmployeeAddress, "Invalid Authorization");
         PayoutAddress = payoutAddress;
     }
 
-    function addSpouse(address payable spouseId) public {
+    function addSpouse(address payable spouseId) public onlyOwner(EmployeeAddress){
         require(SpouseId == address(0), "employee already has a spouse registered");
         SpouseId = spouseId;
     }
 
-    function removeSpouse(address payable spouseId) public {
+    function removeSpouse(address payable spouseId) public onlyOwner(EmployeeAddress){
         require(SpouseId != address(0), "employee does not have a spouse registered");
         SpouseId = spouseId;
     }
 
-    function changePayoutAddress(address payable payoutAddress) public{
+    function changePayoutAddress(address payable payoutAddress) public onlyOwner(EmployeeAddress){
         PayoutAddress = payoutAddress;
     }
 
-    function createNewAccount() public {
-        require(msg.sender == EmployeeAddress, "Invalid Authorization");
+    function createNewAccount() public onlyOwner(EmployeeAddress){
+        //require(msg.sender == EmployeeAddress, "Invalid Authorization");
         Account tempAccountStore = new Account(EmployeeId, Account.AccountAccumulationType.Accumulation1);
         Accounts[address(tempAccountStore)] = tempAccountStore;
     }
 
-    function deleteAccount(address accountAddress) public {
+    function deleteAccount(address accountAddress) public onlyOwner(EmployeeAddress){
         Accounts[accountAddress].closeAccount();
     }
 
-    function transferFundsBetweenAccounts(address payable payTo, address payable payFrom, uint amount) public {
+    function transferFundsBetweenAccounts(address payable payTo, address payable payFrom, uint amount) public onlyOwner(EmployeeAddress){
         if(Accounts[payTo].AccountStatus() == Account.AccountStatusType.open){
             Accounts[payFrom].transferFunds(payTo, amount);
         }
     }
 
-    function payVoluntaryContribution(address payable accountAddress, uint amount) public {
+    function payVoluntaryContribution(address payable accountAddress, uint amount) public onlyOwner(EmployeeAddress){
         if (msg.sender == EmployeeId && address(this).balance > amount) {
             accountAddress.transfer(amount);
         }
