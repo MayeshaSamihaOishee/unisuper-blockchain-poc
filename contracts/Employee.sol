@@ -33,7 +33,7 @@ contract Employee {
         Counter = 0;
     }
 
-//Modifier for owner access permission 
+        //Modifier for owner access permission
     modifier onlyOwner (address _address){
         require(msg.sender == _address, "Invalid Authentication");
     _;
