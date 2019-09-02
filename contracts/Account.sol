@@ -52,47 +52,53 @@ contract Account {
     }
 
 
-    function increaseRewardSize(uint rewardIncrement) public {
+    function increaseRewardSize(uint rewardIncrement) public onlyOwner(EmployeeId){
         RewardSize = RewardSize.add(rewardIncrement);
     }
 
-    function decreaseRewardSize(uint rewardIncrement) public {
+    function decreaseRewardSize(uint rewardIncrement) public onlyOwner(EmployeeId) {
         RewardSize = RewardSize.sub(rewardIncrement);
     }
 
-    function increasePayoutFrequency(uint payoutFrequencyIncrement) public {
+    function increasePayoutFrequency(uint payoutFrequencyIncrement) public onlyOwner(EmployeeId){
         PayoutFrequency = PayoutFrequency.add(payoutFrequencyIncrement);
     }
 
-    function decreasePayoutFrequency(uint payoutFrequencyIncrement) public {
+    function decreasePayoutFrequency(uint payoutFrequencyIncrement) public onlyOwner(EmployeeId){
         PayoutFrequency = PayoutFrequency.sub(payoutFrequencyIncrement);
     }
 
-    function removeAllDelegatePermissions(address thirdPartyAddress) public {
+    function removeAllDelegatePermissions(address thirdPartyAddress) public onlyOwner(EmployeeId){
         if(DelegatePermissions[thirdPartyAddress] != DelegatedPermissionTypes.none) {
             DelegatePermissions[thirdPartyAddress] = DelegatedPermissionTypes.none;
         }
     }
 
-    function permitToContributiveOnly(address thirdPartyAddress) public {
+    function permitToContributiveOnly(address thirdPartyAddress) public onlyOwner(EmployeeId) {
         if(DelegatePermissions[thirdPartyAddress] != DelegatedPermissionTypes.none) {
             DelegatePermissions[thirdPartyAddress] = DelegatedPermissionTypes.none;
         }
     }
 
-    function permitToAdmistrative(address thirdPartyAddress) public {
+    function permitToAdmistrative(address thirdPartyAddress) public onlyOwner(EmployeeId) {
         if(DelegatePermissions[thirdPartyAddress] != DelegatedPermissionTypes.none) {
             DelegatePermissions[thirdPartyAddress] = DelegatedPermissionTypes.none;
         }
     }
-
-    function closeAccount() public {
-        require(msg.sender == EmployeeId, 'invalid authorisation');
+    //Modifier to check Employee Id
+    modifier onlyOwner (address _address){
+        require(msg.sender == _address, "Invalid Authentication");
+    _;
+    }
+    function closeAccount() public onlyOwner(EmployeeId){
+       // require(msg.sender == EmployeeId, 'invalid authorisation');
         require(AccountStatus != AccountStatusType.closed, "Account Already Closed");
         AccountStatus = AccountStatusType.closed;
     }
 
-    function transferFunds(address payable recieverAddress, uint amount) public {
+    
+
+    function transferFunds(address payable recieverAddress, uint amount) public  onlyOwner(EmployeeId){
         if (msg.sender == EmployeeId && NetBalance < amount) {
             // Add validation that address belongs to a type(SuperAccount)
             NetBalance -= amount;
