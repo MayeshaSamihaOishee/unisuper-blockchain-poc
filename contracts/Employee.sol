@@ -22,11 +22,11 @@ contract Employee {
     string public DOB;
 
     mapping (address => Account) Accounts;
-    Account[] arrayOfAccounts;
+    address[] public arrayOfAccounts;
     event LogCreateNewAccount(Account loggedAccount);
 
 
-    constructor(string memory dob) public {
+    constructor(string memory dob, address payable employeeAddress) public {
         EmployeeAddress = msg.sender;
         EmployeeId = address(this);
         DOB = dob;
@@ -86,8 +86,8 @@ contract Employee {
 
     // Creating testable code
 
-    function getArrayOfAccounts() public view  returns (Account[] memory) {
-        return arrayOfAccounts;
+    function getArrayOfAccounts() public view  returns (address[] memory) {
+        arrayOfAccounts;
     }
 
     function () external payable {}
