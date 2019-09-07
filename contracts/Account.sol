@@ -25,10 +25,11 @@ contract Account {
     }
 
     event LogSuccessfullyCreated(string createdAccount);
+    event LogSuccessfullyRemoved(string removedAccount);
 
     // Most of these variables should be private, and updated through functions that check ownership permissions
-
-    address payable SuperAccountId; // contractID
+    
+    address payable public SuperAccountId; // contractID
     address payable EmployeeId; // AccountHolder Address, used for permissions to update private variables
     address public TaxOutputAddress; //Address controlled by UniSuper or ATO
     mapping (address => DelegatedPermissionTypes) public DelegatePermissions; // List of Addresses that are allowed to contribute
@@ -40,6 +41,8 @@ contract Account {
 
 
     AccountStatusType public AccountStatus;
+    AccountStatusType public closedAccountType = AccountStatusType.closed;
+    AccountStatusType public openAccountType = AccountStatusType.open;
     AccountAccumulationType AccountType;
 
     constructor(address payable employeeId, AccountAccumulationType accountType) public {
@@ -90,6 +93,8 @@ contract Account {
         require(msg.sender == EmployeeId, 'invalid authorisation');
         require(AccountStatus != AccountStatusType.closed, "Account Already Closed");
         AccountStatus = AccountStatusType.closed;
+        string memory logevent = "Removed Account";
+        emit LogSuccessfullyRemoved(logevent);
     }
 
     function transferFunds(address payable recieverAddress, uint amount) public {
