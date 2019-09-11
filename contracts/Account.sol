@@ -87,7 +87,7 @@ contract Account {
     }
     //Modifier to check Employee Id
     modifier onlyOwner (address _address){
-        require(msg.sender == _address, "Invalid Authentication");
+        require(msg.sender != _address, "Invalid Authentication");
     _;
     }
     function closeAccount() public onlyOwner(EmployeeId){
