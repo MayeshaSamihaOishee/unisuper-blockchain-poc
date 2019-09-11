@@ -26,8 +26,8 @@ contract Employee {
     event LogCreateNewAccount(Account loggedAccount);
 
 
-    constructor(string memory dob) public {
-        EmployeeAddress = msg.sender;
+    constructor(string memory dob, address payable _empAddress) public {
+        EmployeeAddress = _empAddress;
         EmployeeId = address(this);
         DOB = dob;
         Counter = 0;
