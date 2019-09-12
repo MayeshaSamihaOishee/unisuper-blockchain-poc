@@ -6,6 +6,10 @@ import './Account.sol';
 contract Employee {
     using SafeMath for *;
 
+    enum AccountStatusType {
+        closed,
+        open
+    }
     enum AccountAccumulationType {
         Accumulation1,
         Accumulation2,
@@ -18,13 +22,12 @@ contract Employee {
     address public SpouseId;
     address payable public EmployeeAddress;
     address public PayoutAddress;
-    uint32 Counter;
+    uint32 public Counter;
     string public DOB;
 
     mapping (address => Account) Accounts;
     Account[] arrayOfAccounts;
     event LogCreateNewAccount(Account loggedAccount);
-
 
     constructor(string memory dob, address payable _empAddress) public {
         EmployeeAddress = _empAddress;
@@ -40,7 +43,7 @@ contract Employee {
     }
 
     function setPayoutAddress(address payoutAddress) public onlyOwner(EmployeeAddress){
-        //require(msg.sender == EmployeeAddress, "Invalid Authorization");
+        require(msg.sender == EmployeeAddress, "Invalid Authorization");
         PayoutAddress = payoutAddress;
     }
 
@@ -51,7 +54,9 @@ contract Employee {
 
     function removeSpouse(address payable spouseId) public onlyOwner(EmployeeAddress){
         require(SpouseId != address(0), "employee does not have a spouse registered");
-        SpouseId = spouseId;
+        if(SpouseId == spouseId) {
+            SpouseId = address(0);
+        }
     }
 
     function changePayoutAddress(address payable payoutAddress) public onlyOwner(EmployeeAddress){
@@ -59,14 +64,17 @@ contract Employee {
     }
 
     function createNewAccount() public onlyOwner(EmployeeAddress){
-        //require(msg.sender == EmployeeAddress, "Invalid Authorization");
+        require(msg.sender == EmployeeAddress, "Invalid Authorization");
         Account tempAccountStore = new Account(EmployeeId, Account.AccountAccumulationType.Accumulation1);
         Accounts[address(tempAccountStore)] = tempAccountStore;
+        arrayOfAccounts.push(tempAccountStore);
     }
 
     function deleteAccount(address accountAddress) public onlyOwner(EmployeeAddress){
+        require(address(Accounts[accountAddress]) != address(0), 'Account has not been created');
         Accounts[accountAddress].closeAccount();
     }
+
 
     function transferFundsBetweenAccounts(address payable payTo, address payable payFrom, uint amount) public onlyOwner(EmployeeAddress){
         if(Accounts[payTo].AccountStatus() == Account.AccountStatusType.open){
@@ -88,6 +96,10 @@ contract Employee {
 
     function getArrayOfAccounts() public view  returns (Account[] memory) {
         return arrayOfAccounts;
+    }
+
+    function checkAccountClosed(address accountAddress) public view returns (bool) {
+        return Accounts[accountAddress].AccountStatus() == Account.AccountStatusType.closed;
     }
 
     function () external payable {}
