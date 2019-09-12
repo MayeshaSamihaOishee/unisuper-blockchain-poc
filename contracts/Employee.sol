@@ -29,10 +29,9 @@ contract Employee {
     Account[] arrayOfAccounts;
     event LogCreateNewAccount(Account loggedAccount);
 
-    event LogDebugger(string debugEvent);
-    
-    constructor(string memory dob) public {
-        EmployeeAddress = msg.sender;
+    constructor(string memory dob, address payable _empAddress) public {
+        EmployeeAddress = _empAddress;
+        master
         EmployeeId = address(this);
         DOB = dob;
         Counter = 0;
