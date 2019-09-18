@@ -28,7 +28,7 @@ contract Account {
     event LogSuccessfullyRemoved(string removedAccount);
 
     // Most of these variables should be private, and updated through functions that check ownership permissions
-    
+
     address payable public SuperAccountId; // contractID
     address payable EmployeeId; // AccountHolder Address, used for permissions to update private variables
     address public TaxOutputAddress; //Address controlled by UniSuper or ATO
@@ -43,7 +43,7 @@ contract Account {
     AccountStatusType public AccountStatus;
     AccountStatusType public closedAccountType = AccountStatusType.closed;
     AccountStatusType public openAccountType = AccountStatusType.open;
-    AccountAccumulationType AccountType;
+    AccountAccumulationType public AccountType;
 
     constructor(address payable employeeId, AccountAccumulationType accountType) public {
         SuperAccountId = address(this);
