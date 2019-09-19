@@ -12,5 +12,6 @@ module.exports = {
   compilers: {
     solc: {
     }
-  }
+  },
+  contracts_build_directory: "..\\unisuper-frontend-poc\\src\\contracts"
 }
